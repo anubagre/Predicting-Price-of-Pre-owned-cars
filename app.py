@@ -1,4 +1,4 @@
-#1.Pandas for dataframe
+    #1.Pandas for dataframe
 import pandas as pd
 
     #2. NumPy to peform Calculations
@@ -9,6 +9,9 @@ from sklearn.model_selection import train_test_split
 
     #4. For Linear Regression
 from sklearn.linear_model import LinearRegression
+
+    #For UI
+import streamlit as st
 
 
 """# Pre-processing data"""
