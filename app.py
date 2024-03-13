@@ -116,12 +116,15 @@ try:
 except ValueError:
     st.error('Please enter a valid integer.')
 
+b1=st.button("Submit") #button
 
 data = np.array([int_val1, int_val2, int_val3])
 data=data.reshape(1, -1)
 
 # Make predictions
 predictions = model.predict(data)
-st.write("Price in INR:")
-val=np.round(predictions,2)
-st.write(-val)
+
+if b1:
+    st.write("Price in INR:")
+    val=np.round(predictions,2)
+    st.write(val)
