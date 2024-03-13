@@ -1,10 +1,89 @@
-import streamlit as st
-import pickle
+#1.Pandas for dataframe
+import pandas as pd
+
+    #2. NumPy to peform Calculations
 import numpy as np
 
-# Load the model from the file
-with open('model.pkl', 'rb') as file:
-    loaded_model = pickle.load(file)
+    #3. To split data
+from sklearn.model_selection import train_test_split
+
+    #4. For Linear Regression
+from sklearn.linear_model import LinearRegression
+
+
+"""# Pre-processing data"""
+
+# Reading CSV file
+cars_data=pd.read_csv("cars_sampled.csv" )
+#Creating copy
+cars=cars_data.copy()
+
+# Summarizing data
+pd.set_option('display.float_format', lambda x: '%.2f' % x)
+
+# Data cleaning
+# Dropping unwanted columns
+col=['name','dateCrawled','dateCreated','postalCode','lastSeen']
+cars=cars.drop(columns=col, axis=1)
+
+# Removing duplicate records
+cars.drop_duplicates(keep='first',inplace=True)
+#470 duplicate records
+
+# Variable yearOfRegistration
+yearwise_count=cars['yearOfRegistration'].value_counts().sort_index()
+
+sum(cars['yearOfRegistration'] > 2018)
+sum(cars['yearOfRegistration'] < 1950)
+
+# Working range- 1950 and 2018
+
+
+sum(cars['price'] > 150000)
+sum(cars['price'] < 100)
+# Working range- 100 and 150000
+
+
+sum(cars['powerPS'] > 500)
+sum(cars['powerPS'] < 10)
+# Working range- 10 and 500
+
+# Working range of data
+
+cars = cars[
+        (cars.yearOfRegistration <= 2018)
+      & (cars.yearOfRegistration >= 1950)
+      & (cars.price >= 100)
+      & (cars.price <= 150000)
+      & (cars.powerPS >= 10)
+      & (cars.powerPS <= 500)]
+# ~6700 records are dropped
+
+# Further to simplify- variable reduction
+# Combine yearOfRegistration and monthOfRegistration into a single variable using .loc
+cars.loc[:, 'Age'] = (2018 - cars.loc[:, 'yearOfRegistration']) + (cars.loc[:, 'monthOfRegistration'] / 12)
+
+# Round Age to two decimal places
+cars.loc[:, 'Age'] = round(cars.loc[:, 'Age'], 2)
+
+# Dropping yearOfRegistration and monthOfRegistration
+cars=cars.drop(columns=['yearOfRegistration','monthOfRegistration'], axis=1)
+
+# MODEL BUILDING WITH OMITTED DATA
+# Separating input and output features
+# OMITTING MISSING VALUES
+cars_omit=cars.dropna(axis=0)
+
+# Converting categorical variables to dummy variables
+cars_omit=pd.get_dummies(cars_omit,drop_first=True)
+x1 = cars_omit.drop(['price'], axis='columns', inplace=False)
+x1 = cars_omit[['powerPS', 'kilometer', 'Age']]
+x1.columns = ['powerPS', 'kilometer', 'Age']  # Set column names
+y1 = cars_omit['price']
+
+# Train a model
+model = LinearRegression()
+model.fit(x1, y1)
 
 #Taking User Input
 st.header("Predicting Price of Pre-Owned Cars")
