@@ -121,7 +121,7 @@ data = np.array([int_val1, int_val2, int_val3])
 data=data.reshape(1, -1)
 
 # Make predictions
-predictions = loaded_model.predict(data)
+predictions = model.predict(data)
 st.write("Price in INR:")
 val=np.round(predictions,2)
 st.write(-val)
